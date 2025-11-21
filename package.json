@@ -1,0 +1,13 @@
+{
+  "name": "timeline",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "scripts": {
+    "dev": "echo 'Add your dev command'",
+    "build": "echo 'Add your build command'"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
