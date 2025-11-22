@@ -135,71 +135,6 @@ function TimelineScene() {
     cameraRef.current = camera;
     rendererRef.current = renderer;
 
-    // Create markers dynamically
-    const createMarkers = (items) => {
-      if (!timelineGroup) return;
-
-      markersRef.current.forEach(({ marker, line, ring }) => {
-        timelineGroup.remove(marker);
-        timelineGroup.remove(line);
-        timelineGroup.remove(ring);
-        marker.geometry.dispose();
-        marker.material.dispose();
-        line.geometry.dispose();
-        line.material.dispose();
-        ring.geometry.dispose();
-        ring.material.dispose();
-      });
-      markersRef.current = [];
-
-      if (!items || items.lenght === 0) return;
-
-      items.forEach((item) => {
-        const markerGeometry = new THREE.SphereGeometry(1.5, 32, 32);
-        const markerMaterial = new THREE.MeshStandardMaterial({
-          color: item.color,
-          metalness: 0.3,
-          roughness: 0.4,
-          emissive: item.color,
-          emissiveIntensity: 0.5,
-        });
-        const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-        marker.position.set(item.position, 5, 0);
-        marker.castShadow = true;
-        marker.userData = { item, type: "marker" };
-        timelineGroup.add(marker);
-
-        const lineGeometry = new THREE.CylinderGeometry(0.08, 0.08, 6, 16);
-        const lineMaterial = new THREE.MeshStandardMaterial({
-          color: 0x90caf9,
-          transparent: true,
-          opacity: 0.8,
-          metalness: 0.2,
-          roughness: 0.8,
-        });
-        const line = new THREE.Mesh(lineGeometry, lineMaterial);
-        line.position.set(item.position, 8, 0);
-        timelineGroup.add(line);
-
-        const ringGeometry = new THREE.TorusGeometry(2, 0.1, 16, 32);
-        const ringMaterial = new THREE.MeshStandardMaterial({
-          color: item.color,
-          emissive: item.color,
-          emissiveIntensity: 0.6,
-          transparent: true,
-          opacity: 0.7,
-        });
-        const ring = new THREE.Mesh(ringGeometry, ringMaterial);
-        ring.position.set(item.position, 5, 0);
-        ring.rotation.x = Math.PI / 2;
-        timelineGroup.add(ring);
-
-        markersRef.current.push({ marker, line, ring, item });
-      });
-    };
-
-    createMarkers(visibleItems);
-
     const updateLabelPositions = () => {
       const labels = visibleItems.map((item) => {
         const vector = new THREE.Vector3(item.position, 5, 0);
@@ -238,10 +173,10 @@ function TimelineScene() {
       camera.lookAt(lookAtTarget);
 
       // Mouse parallax
-      const parallaxX = mouseRef.current.x * 0.01;
-      const parallaxY = mouseRef.current.y * 0.01;
-      camera.position.x += parallaxX * 0.1;
-      camera.position.y += parallaxY * 0.1;
+      //const parallaxX = mouseRef.current.x * 0.01;
+      //const parallaxY = mouseRef.current.y * 0.01;
+      //camera.position.x += parallaxX * 0.1;
+      //camera.position.y += parallaxY * 0.1;
 
       updateLabelPositions();
       renderer.render(scene, camera);
@@ -250,6 +185,7 @@ function TimelineScene() {
 
     // Click handler
     const handleClick = (e) => {
+      console.log("Canvas clicked");
       const rect = renderer.domElement.getBoundingClientRect();
       const x = ((e.clientX - rect.left) / rect.width) * 2 - 1;
       const y = -((e.clientY - rect.top) / rect.height) * 2 + 1;
@@ -259,6 +195,7 @@ function TimelineScene() {
       const intersects =
         raycasterRef.current.intersectObjects(clickableMarkers);
 
+      console.log("Raycaster intersects:", intersects);
       if (intersects.length > 0) {
         const clickedMarker = intersects[0].object;
         const item = clickedMarker.userData.item;
@@ -309,6 +246,8 @@ function TimelineScene() {
     };
 
     renderer.domElement.addEventListener("click", handleClick);
+    console.log("Click event listener added");
+    console.log("Click event listener removed");
     renderer.domElement.addEventListener("wheel", handleWheel, {
       passive: false,
     });
@@ -344,7 +283,7 @@ function TimelineScene() {
     );
 
     if (!timelineGroup) return;
-
+    console.log("Visible items updated:", visibleItems);
     // Clear old markers
     markersRef.current.forEach(({ marker, line, ring }) => {
       timelineGroup.remove(marker);
