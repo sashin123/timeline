@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import EventLabel from "./EventLabel";
 import { timelineData } from "../data/timelineData";
-import { useTimelineZoom } from "../hooks/useTimelineZoom";
+import { useTimeLineZoom } from "../hooks/useTimeLineZoom";
 
 function TimelineScene() {
   const containerRef = useRef(null);
@@ -24,7 +24,7 @@ function TimelineScene() {
     zoomIn,
     zoomOut,
     canZoomOut,
-  } = useTimelineZoom(timelineData);
+  } = useTimeLineZoom(timelineData);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -164,10 +164,8 @@ function TimelineScene() {
       });
 
       // Smooth camera movement
-      camera.position.x +=
-        (targetCameraPos.current.x - camera.position.x) * 0.05;
-      camera.position.z +=
-        (targetCameraPos.current.z - camera.position.z) * 0.05;
+      camera.position.x = targetCameraPos.current.x;
+      camera.position.z = targetCameraPos.current.z;
 
       const lookAtTarget = new THREE.Vector3(targetCameraPos.current.x, 5, 0);
       camera.lookAt(lookAtTarget);
@@ -332,7 +330,12 @@ function TimelineScene() {
       ring.position.set(item.position, 5, 0);
       ring.rotation.x = Math.PI / 2;
       timelineGroup.add(ring);
-
+      console.log(
+        "Created marker at",
+        marker.position,
+        "Created ring at",
+        ring.position,
+      );
       markersRef.current.push({ marker, line, ring, item });
     });
 

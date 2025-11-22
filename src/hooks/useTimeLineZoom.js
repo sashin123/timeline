@@ -6,7 +6,7 @@ export const ZOOM_LEVELS = {
   EVENT: "event",
 };
 
-export function useTimelineZoom(timelineData) {
+export function useTimeLineZoom(timelineData) {
   const [zoomLevel, setZoomLevel] = useState(ZOOM_LEVELS.EON);
   const [activePath, setActivePath] = useState([]);
   const [targetPosition, setTargetPosition] = useState(null);
