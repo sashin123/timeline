@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import EventLabel from "./EventLabel";
+import { timelineData } from "../data/timelineData";
+import { useTimelineZoom } from "../hooks/useTimelineZoom";
 
 // Define event data at module level so it's accessible everywhere
 const eventData = [
@@ -21,6 +23,19 @@ function TimelineScene() {
   const scrollPositionRef = useRef(-75);
   const mouseRef = useRef({ x: 0, y: 0 });
   const [eventLabels, setEventLabels] = useState([]);
+  const {
+    zoomLevel,
+    visibleItems,
+    breadcrumbs,
+    targetPosition,
+    zoomIn,
+    zoomOut,
+    canZoomOut,
+  } = useTimelineZoom(timelineData);
+
+  console.log("Current zoom level:", zoomLevel);
+  console.log("Visible items:", visibleItems);
+  console.log("Breadcrumbs:", breadcrumbs);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -311,6 +326,30 @@ function TimelineScene() {
           isVisible={label.isVisible}
         />
       ))}
+
+      <div style={{
+      position: 'absolute',
+      bottom: '20px',
+      left: '20px',
+      background: 'rgba(255,255,255,0.9)',
+      padding: '15px',
+      borderRadius: '8px',
+      fontFamily: 'monospace',
+      zIndex: 1000
+    }}>
+      <div><strong>Zoom Level:</strong> {zoomLevel}</div>
+      <div><strong>Visible Items:</strong> {visibleItems.length}</div>
+      <div><strong>Breadcrumbs:</strong> {breadcrumbs.map(b => b.name).join(' > ') || 'Root'}</div>
+      <button 
+        onClick={zoomOut} 
+        disabled={!canZoomOut}
+        style={{ marginTop: '10px', padding: '5px 10px' }}
+      >
+        Zoom Out
+      </button>
+    </div>
+
+
     </>
   );
 }
